@@ -4215,6 +4215,9 @@ func execAffinityTestForSessionAffinityTimeout(ctx context.Context, f *framework
 			family = v1.IPv6Protocol
 		}
 		svcIP = e2enode.FirstAddressByTypeAndFamily(nodes, v1.NodeInternalIP, family)
+		if svcIP == "" {
+			svcIP = e2enode.FirstAddressByTypeAndFamily(nodes, v1.NodeExternalIP, family)
+		}
 		gomega.Expect(svcIP).NotTo(gomega.BeEmpty(), "failed to get Node internal IP for family: %s", family)
 		servicePort = int(svc.Spec.Ports[0].NodePort)
 	} else {
