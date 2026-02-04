@@ -1268,6 +1268,9 @@ func getNodeHostIP(ctx context.Context, f *framework.Framework, nodeName string)
 	framework.ExpectNoError(err)
 	ips := e2enode.GetAddressesByTypeAndFamily(node, v1.NodeInternalIP, family)
 	if len(ips) == 0 {
+		ips = e2enode.GetAddressesByTypeAndFamily(node, v1.NodeExternalIP, family)
+	}
+	if len(ips) == 0 {
 		framework.Failf("No address by type (%s) and family (%s) on node (%s) found.",
 			v1.NodeInternalIP, family, nodeName)
 	}

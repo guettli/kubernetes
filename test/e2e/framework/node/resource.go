@@ -254,6 +254,28 @@ func FirstAddressByTypeAndFamily(nodelist *v1.NodeList, addrType v1.NodeAddressT
 	return ""
 }
 
+// GetIPAddressesByFamily returns a list of ip addresses of the given node filtered by IPFamily.
+// Return InternalIPs followed by ExternalIPs. Similar to GetNodeHostIPs().
+func GetIPAddressesByFamily(node *v1.Node, family v1.IPFamily) (ips []string) {
+	for _, t := range []v1.NodeAddressType{v1.NodeInternalIP, v1.NodeExternalIP} {
+		for _, nodeAddress := range node.Status.Addresses {
+			if nodeAddress.Type != t {
+				continue
+			}
+			if nodeAddress.Address == "" {
+				continue
+			}
+			if family == v1.IPv6Protocol && netutil.IsIPv6String(nodeAddress.Address) {
+				ips = append(ips, nodeAddress.Address)
+			}
+			if family == v1.IPv4Protocol && !netutil.IsIPv6String(nodeAddress.Address) {
+				ips = append(ips, nodeAddress.Address)
+			}
+		}
+	}
+	return
+}
+
 // GetAddressesByTypeAndFamily returns a list of addresses of the given addressType for the given node
 // and filtered by IPFamily
 func GetAddressesByTypeAndFamily(node *v1.Node, addressType v1.NodeAddressType, family v1.IPFamily) (ips []string) {

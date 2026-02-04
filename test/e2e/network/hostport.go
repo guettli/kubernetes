@@ -77,7 +77,7 @@ var _ = common.SIGDescribe("HostPort", func() {
 		}
 		randomNode := &nodes.Items[rand.Intn(len(nodes.Items))]
 
-		ips := e2enode.GetAddressesByTypeAndFamily(randomNode, v1.NodeInternalIP, family)
+		ips := e2enode.GetIPAddressesByFamily(randomNode, family)
 		if len(ips) == 0 {
 			framework.Failf("Failed to get NodeIP")
 		}
