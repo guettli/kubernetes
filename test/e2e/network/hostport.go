@@ -77,7 +77,7 @@ var _ = common.SIGDescribe("HostPort", func() {
 		}
 		randomNode := &nodes.Items[rand.Intn(len(nodes.Items))]
 
-		ips := e2enode.GetAddressesByTypeAndFamily(randomNode, v1.NodeInternalIP, family)
+		ips := e2enode.GetIPAddressesByFamily(randomNode, family)
 		if len(ips) == 0 {
 			framework.Failf("Failed to get NodeIP")
 		}
@@ -216,6 +216,6 @@ func createHostPortPodOnNode(ctx context.Context, f *framework.Framework, podNam
 	}
 
 	if err := e2epod.WaitTimeoutForPodReadyInNamespace(ctx, f.ClientSet, podName, ns, framework.PodStartTimeout); err != nil {
-		framework.Failf("wait for pod %s timeout, err:%v", podName, err)
+		framework.Failf("createHostPortPodOnNode: pod %s (%s:%d) failed or timeout, err:%v", podName, hostIP, port, err)
 	}
 }
